@@ -31,27 +31,44 @@ async function run() {
       .db("TOYS")
       .collection("ToySubcategory");
 
-    const commentCollection = client.db("TOYS").collection("comment")
+    const commentCollection = client.db("TOYS").collection("comment");
 
-    // find all toy in database 
-    app.get('/allToys', async(req,res)=>{
-        const result = await subCategoryCollection.find().toArray()
-        res.send(result)
-    })
-    // filter by toys in title
-    app.get("/toys", async (req, res) => {
-      const title = req.query.title;
-      const filter = { title:  title };
-      const result = await subCategoryCollection.find(filter).toArray();
+    // indexing start
+    const indexKey = { toyName: 1 };
+    const indexOption = { name: "toyName" };
+
+    const result = await subCategoryCollection.createIndex(
+      indexKey,
+      indexOption
+    );
+
+    app.get("/allToys/:text", async (req, res) => {
+      const searchToy = req.params.text;
+      const result = await subCategoryCollection.find({
+        toyName: { $regex: searchToy, $options: "i" },
+      }).toArray();
       res.send(result)
     });
 
+    // find all toy in database
+    app.get("/allToys", async (req, res) => {
+      const result = await subCategoryCollection.find().toArray();
+      res.send(result);
+    });
+    // filter by toys in title
+    app.get("/toys", async (req, res) => {
+      const category = req.query.category;
+      const filter = { category: category };
+      const result = await subCategoryCollection.find(filter).toArray();
+      res.send(result);
+    });
+
     // post by comment out website
-    app.post('/comment',async(req, res)=>{
-        const body = req.body
-        const result = await commentCollection.insertOne(body)
-        res.send(result)
-    })
+    app.post("/comment", async (req, res) => {
+      const body = req.body;
+      const result = await commentCollection.insertOne(body);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
