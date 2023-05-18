@@ -29,9 +29,15 @@ async function run() {
     // await client.connect();
     const subCategoryCollection = client
       .db("TOYS")
-      .collection("toySubcategory");
+      .collection("ToySubcategory");
 
     const commentCollection = client.db("TOYS").collection("comment")
+
+    // find all toy in database 
+    app.get('/allToys', async(req,res)=>{
+        const result = await subCategoryCollection.find().toArray()
+        res.send(result)
+    })
     // filter by toys in title
     app.get("/toys", async (req, res) => {
       const title = req.query.title;
