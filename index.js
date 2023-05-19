@@ -65,6 +65,13 @@ async function run() {
       const result = await subCategoryCollection.find().toArray();
       res.send(result);
     });
+    // post by toy in database
+    app.post("/allToys", async (req, res) => {
+      const body = req.body;
+      console.log(body);
+      const result = await subCategoryCollection.insertOne(body);
+      console.log(result);
+    });
     // filter by toys in title
     app.get("/toys", async (req, res) => {
       const category = req.query.category;
@@ -72,7 +79,6 @@ async function run() {
       const result = await subCategoryCollection.find(filter).toArray();
       res.send(result);
     });
-
     // post by comment out website
     app.post("/comment", async (req, res) => {
       const body = req.body;
