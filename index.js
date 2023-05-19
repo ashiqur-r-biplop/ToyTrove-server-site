@@ -45,8 +45,17 @@ async function run() {
     app.get("/allToys/:text", async (req, res) => {
       const searchToy = req.params.text;
       const result = await subCategoryCollection
-        .find({toyName: { $regex: searchToy, $options: "i" },})
+        .find({ toyName: { $regex: searchToy, $options: "i" } })
         .toArray();
+      res.send(result);
+    });
+
+    // get toy by useing user email
+    app.get("/myToy", async (req, res) => {
+      const email = req.query.email;
+      const filter = { sellerEmail: email };
+      const result = await subCategoryCollection.find(filter).toArray();
+      console.log(result);
       res.send(result);
     });
 
@@ -68,7 +77,7 @@ async function run() {
       const body = req.body;
       console.log(body);
       const result = await subCategoryCollection.insertOne(body);
-      res.send(result)
+      res.send(result);
     });
     // filter by toys in title
     app.get("/toys", async (req, res) => {
