@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
 
@@ -44,10 +44,20 @@ async function run() {
 
     app.get("/allToys/:text", async (req, res) => {
       const searchToy = req.params.text;
-      const result = await subCategoryCollection.find({
-        toyName: { $regex: searchToy, $options: "i" },
-      }).toArray();
-      res.send(result)
+      const result = await subCategoryCollection
+        .find({
+          toyName: { $regex: searchToy, $options: "i" },
+        })
+        .toArray();
+      res.send(result);
+    });
+
+    // find one toy use Objectid
+    app.get("/details/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await subCategoryCollection.findOne(query);
+      res.send(result);
     });
 
     // find all toy in database
