@@ -70,7 +70,7 @@ async function run() {
       const body = req.body;
       console.log(body);
       const result = await subCategoryCollection.insertOne(body);
-      console.log(result);
+      res.send(result)
     });
     // filter by toys in title
     app.get("/toys", async (req, res) => {
