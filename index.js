@@ -45,9 +45,7 @@ async function run() {
     app.get("/allToys/:text", async (req, res) => {
       const searchToy = req.params.text;
       const result = await subCategoryCollection
-        .find({
-          toyName: { $regex: searchToy, $options: "i" },
-        })
+        .find({toyName: { $regex: searchToy, $options: "i" },})
         .toArray();
       res.send(result);
     });
@@ -62,7 +60,7 @@ async function run() {
 
     // find all toy in database
     app.get("/allToys", async (req, res) => {
-      const result = await subCategoryCollection.find().toArray();
+      const result = await subCategoryCollection.find().limit(20).toArray();
       res.send(result);
     });
     // post by toy in database
