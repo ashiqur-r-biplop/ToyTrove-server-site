@@ -72,7 +72,6 @@ async function run() {
           toyName: body?.toyName,
           price: body?.price,
           quantity: body?.quantity,
-          rating: body?.rating,
           description: body?.description,
         },
       };
