@@ -58,6 +58,32 @@ async function run() {
       console.log(result);
       res.send(result);
     });
+    // update a toy useing _id in the database
+    app.patch("/update/:id", async (req, res) => {
+      const body = req?.body;
+      const id = req?.params?.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateToy = {
+        $set: {
+          sellerName: body?.sellerName,
+          sellerEmail: body?.sellerEmail,
+          category: body?.category,
+          photoUrl: body?.photoUrl,
+          toyName: body?.toyName,
+          price: body?.price,
+          quantity: body?.quantity,
+          rating: body?.rating,
+          description: body?.description,
+        },
+      };
+      const option = { upsert: true };
+      const result = await subCategoryCollection.updateOne(
+        filter,
+        updateToy,
+        option
+      );
+      res.send(result);
+    });
 
     // find one toy use Objectid
     app.get("/details/:id", async (req, res) => {
