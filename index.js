@@ -33,15 +33,6 @@ async function run() {
 
     const commentCollection = client.db("TOYS").collection("comment");
 
-    // indexing start
-    const indexKey = { toyName: 1 };
-    const indexOption = { name: "toyName" };
-
-    const result = await subCategoryCollection.createIndex(
-      indexKey,
-      indexOption
-    );
-
     app.get("/allToys/:text", async (req, res) => {
       const searchToy = req.params.text;
       const result = await subCategoryCollection
