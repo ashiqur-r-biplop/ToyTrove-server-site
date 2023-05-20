@@ -49,6 +49,15 @@ async function run() {
       // console.log(result);
       res.send(result);
     });
+    app.get("/sortMyToy", async (req, res) => {
+      const email = req.query.email;
+      const filter = { sellerEmail: email };
+      const result = await subCategoryCollection
+        .find(filter)
+        .sort({ price: 1 })
+        .toArray();
+      res.send(result);
+    });
     // update a toy useing _id in the database
     app.patch("/update/:id", async (req, res) => {
       const body = req?.body;
@@ -78,7 +87,6 @@ async function run() {
     // find one toy use Objectid
     app.get("/details/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
       const query = { _id: new ObjectId(id) };
       const result = await subCategoryCollection.findOne(query);
       res.send(result);
@@ -97,7 +105,10 @@ async function run() {
     app.post("/allToys", async (req, res) => {
       const body = req.body;
       // console.log(body);
-      const result = await subCategoryCollection.insertOne(body);
+      const result = await subCategoryCollection.insertOne({
+        ...body,
+        price: parseFloat(body.price),
+      });
       res.send(result);
     });
     // filter by toys in title
