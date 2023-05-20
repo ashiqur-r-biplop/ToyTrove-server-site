@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+
     const subCategoryCollection = client
       .db("TOYS")
       .collection("ToySubcategory");
@@ -49,12 +49,23 @@ async function run() {
       // console.log(result);
       res.send(result);
     });
-    app.get("/sortMyToy", async (req, res) => {
+    // accending by price
+    app.get("/ascending", async (req, res) => {
       const email = req.query.email;
       const filter = { sellerEmail: email };
       const result = await subCategoryCollection
         .find(filter)
         .sort({ price: 1 })
+        .toArray();
+      res.send(result);
+    });
+    // accending by price
+    app.get("/descending", async (req, res) => {
+      const email = req.query.email;
+      const filter = { sellerEmail: email };
+      const result = await subCategoryCollection
+        .find(filter)
+        .sort({ price: -1 })
         .toArray();
       res.send(result);
     });
@@ -105,10 +116,7 @@ async function run() {
     app.post("/allToys", async (req, res) => {
       const body = req.body;
       // console.log(body);
-      const result = await subCategoryCollection.insertOne({
-        ...body,
-        price: parseFloat(body.price),
-      });
+      const result = await subCategoryCollection.insertOne({...body, price: parseFloat(body.price),});
       res.send(result);
     });
     // filter by toys in title
