@@ -59,7 +59,7 @@ async function run() {
         .toArray();
       res.send(result);
     });
-    // accending by price
+    // Deccending by price
     app.get("/descending", async (req, res) => {
       const email = req.query.email;
       const filter = { sellerEmail: email };
@@ -116,7 +116,10 @@ async function run() {
     app.post("/allToys", async (req, res) => {
       const body = req.body;
       // console.log(body);
-      const result = await subCategoryCollection.insertOne({...body, price: parseFloat(body.price),});
+      const result = await subCategoryCollection.insertOne({
+        ...body,
+        price: parseFloat(body.price),
+      });
       res.send(result);
     });
     // filter by toys in title
@@ -132,7 +135,14 @@ async function run() {
       const result = await commentCollection.insertOne(body);
       res.send(result);
     });
-
+    // get comment useing email
+    app.get("/myComment", async (req, res) => {
+      const email = req.query.email;
+      const filter = { email: email };
+      const result = await commentCollection.find(filter).toArray();
+      console.log(result);
+      res.send(result);
+    });
     app.delete("/delete/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
