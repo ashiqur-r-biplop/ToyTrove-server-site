@@ -143,6 +143,13 @@ async function run() {
       console.log(result);
       res.send(result);
     });
+    // delete commet useing id
+    app.delete("/commentDelete/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await commentCollection.deleteOne(query);
+      res.send(result)
+    });
     app.delete("/delete/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
