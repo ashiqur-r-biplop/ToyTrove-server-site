@@ -81,7 +81,7 @@ async function run() {
           category: body?.category,
           photoUrl: body?.photoUrl,
           toyName: body?.toyName,
-          price: body?.price,
+          price: parseFloat(body?.price),
           quantity: body?.quantity,
           description: body?.description,
         },
@@ -115,11 +115,18 @@ async function run() {
     // post by toy in database
     app.post("/allToys", async (req, res) => {
       const body = req.body;
+      const categoryValue = req.body?.category
+      let categoryUpdate = ""
+      if(categoryValue == "Teddy bear"){
+        categoryUpdate = "Teddy"
+      } else if(categoryValue == "Horse"){
+        categoryUpdate = "Horse"
+      } else if(categoryValue == "Dogs"){
+        categoryUpdate = "Dogs"
+      }
       // console.log(body);
-      const result = await subCategoryCollection.insertOne({
-        ...body,
-        price: parseFloat(body.price),
-      });
+      const result = await subCategoryCollection.insertOne({...body, price: parseFloat(body.price), category: categoryUpdate });
+      console.log(result);
       res.send(result);
     });
     // filter by toys in title
@@ -140,7 +147,7 @@ async function run() {
       const email = req.query.email;
       const filter = { email: email };
       const result = await commentCollection.find(filter).toArray();
-      console.log(result);
+      // console.log(result);
       res.send(result);
     });
     // delete commet useing id
@@ -148,7 +155,7 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await commentCollection.deleteOne(query);
-      res.send(result)
+      res.send(result);
     });
     app.delete("/delete/:id", async (req, res) => {
       const id = req.params.id;
